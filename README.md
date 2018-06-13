@@ -40,3 +40,7 @@
 ## Contribute
 欢迎一起玩耍！
 
+## Reference
+
+* [Install Redis](https://redis.io/topics/quickstart)
+* [Install MongoDB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/)
