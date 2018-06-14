@@ -68,7 +68,7 @@ vsRouter.all('/*', async (ctx, next) => {
   });
   await next(ctx);
 });
-app.ws.use(wsRouter.routes()))
+app.ws.use(wsRouter.routes());
 app.ws.use(wsRouter.allowedMethods());
 
 // error-handling
