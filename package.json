@@ -14,6 +14,7 @@
     "@types/koa-redis": "^3.0.2",
     "@types/koa-route": "^3.2.3",
     "@types/koa-websocket": "^2.1.2",
+    "@types/ws": "^5.1.2",
     "debug": "^2.6.3",
     "koa": "^2.2.0",
     "koa-bodyparser": "^3.2.0",
@@ -29,7 +30,8 @@
     "koa-static": "^3.0.0",
     "koa-views": "^5.2.1",
     "koa-websocket": "^5.0.1",
-    "pug": "^2.0.0-rc.1"
+    "pug": "^2.0.0-rc.1",
+    "ws": "^5.2.0"
   },
   "devDependencies": {
     "@types/eslint": "^4.16.2",

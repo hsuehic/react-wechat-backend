@@ -20,8 +20,7 @@ const websockify = require('koa-websocket');
 
 const redisStore = redis({});
 
-const app =  websockify(new Koa());
-const wsRouter = router();
+const app = websockify(new Koa());
 
 app.keys = ['keys', 'keykeys'];
 
@@ -59,17 +58,16 @@ const users = require('./routes/users');
 app.use(index.routes(), index.allowedMethods());
 app.use(users.routes(), users.allowedMethods());
 
-// websock handle
-wsRouter.all('/*', async(ctx, next) => {
-  const { websocket: ws } = ctx;
-  ws.send('Hello world');
-  ws.on('message', message => {
+const api = router();
+api.get('/*', async(ctx, next) => {
+  ctx.websocket.send('Hello World');
+  ctx.websocket.on('message', message => {
     console.log(message);
   });
-  await next(ctx);
+  await next;
 });
-app.ws.use(wsRouter.routes());
-app.ws.use(wsRouter.allowedMethods());
+
+app.ws.use(api.routes()).use(api.allowedMethods());
 
 // error-handling
 app.on('error', (err, ctx) => {
