@@ -9,9 +9,7 @@ const session = require('koa-generic-session');
 const redis = require('koa-redis');
 const koaStatic = require('koa-static');
 
-let redisStore = redis({
-  // Options specified here
-});
+const redisStore = redis({});
 
 const app = new Koa();
 

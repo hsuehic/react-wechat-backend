@@ -1,8 +1,12 @@
 const router = require('koa-router')();
 
 router.get('/', async(ctx, next) => {
+  const session = ctx.session;
+  session.count = session.count || 0;
+  session.count++;
   await ctx.render('index', {
-    title: 'Hello Koa 2!'
+    title: 'Hello Koa 2!',
+    count: session.count
   });
 });
 
