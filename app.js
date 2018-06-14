@@ -1,5 +1,13 @@
+/**
+ * @File   : configs.js
+ * @Author : Richard (xiaowei.hsueh@gmail.com)
+ * @Link   : http://www.gistop.com/
+ * @Date   : 2018-6-14 19:55:43
+ */
+
 const path = require('path');
 const Koa = require('koa');
+const router = require('koa-router');
 const views = require('koa-views');
 const json = require('koa-json');
 const onerror = require('koa-onerror');
@@ -8,18 +16,19 @@ const logger = require('koa-logger');
 const session = require('koa-generic-session');
 const redis = require('koa-redis');
 const koaStatic = require('koa-static');
+const websockify = require('koa-websocket');
 
 const redisStore = redis({});
 
-const app = new Koa();
+const app =  websockify(new Koa());
+const wsRouter = router();
 
 app.keys = ['keys', 'keykeys'];
+
+// application session
 app.use(session({
   store: redisStore
 }));
-
-const index = require('./routes/index');
-const users = require('./routes/users');
 
 // error handler
 onerror(app);
@@ -44,9 +53,23 @@ app.use(async(ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
 
-// routes
+// feature routers
+const index = require('./routes/index');
+const users = require('./routes/users');
 app.use(index.routes(), index.allowedMethods());
 app.use(users.routes(), users.allowedMethods());
+
+// websock handle
+vsRouter.all('/*', async (ctx, next) => {
+  const { websocket: ws } = ctx;
+  ctx.websocket.send('Hello world');
+  ctx.websocket.on('message', message => {
+    console.log(message);
+  });
+  await next(ctx);
+});
+app.ws.use(wsRouter.routes()))
+app.ws.use(wsRouter.allowedMethods());
 
 // error-handling
 app.on('error', (err, ctx) => {
