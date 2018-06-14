@@ -60,10 +60,10 @@ app.use(index.routes(), index.allowedMethods());
 app.use(users.routes(), users.allowedMethods());
 
 // websock handle
-vsRouter.all('/*', async (ctx, next) => {
+wsRouter.all('/*', async(ctx, next) => {
   const { websocket: ws } = ctx;
-  ctx.websocket.send('Hello world');
-  ctx.websocket.on('message', message => {
+  ws.send('Hello world');
+  ws.on('message', message => {
     console.log(message);
   });
   await next(ctx);
