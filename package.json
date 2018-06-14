@@ -27,6 +27,9 @@
     "pug": "^2.0.0-rc.1"
   },
   "devDependencies": {
+    "@types/eslint": "^4.16.2",
+    "babel-eslint": "^8.2.3",
+    "eslint": "^4.19.1",
     "eslint-config-koa": "^2.0.2",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.12.0",
