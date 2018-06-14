@@ -42,5 +42,6 @@
 
 ## Reference
 
+* [Install nginx](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-16-04)
 * [Install Redis](https://redis.io/topics/quickstart)
 * [Install MongoDB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/)
