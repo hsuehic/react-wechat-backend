@@ -17,6 +17,7 @@ const session = require('koa-generic-session');
 const redis = require('koa-redis');
 const koaStatic = require('koa-static');
 const websockify = require('koa-websocket');
+const mongo = require('koa-mongo');
 
 const redisStore = redis({});
 
@@ -27,6 +28,15 @@ app.keys = ['keys', 'keykeys'];
 // application session
 app.use(session({
   store: redisStore
+}));
+
+// mongodb context
+app.use(mongo({
+  host: '127.0.0.1',
+  port: 27017,
+  db: 'wechat',
+  max: 100,
+  min: 1
 }));
 
 // error handler

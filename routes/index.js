@@ -15,9 +15,8 @@ router.get('/string', async(ctx, next) => {
 });
 
 router.get('/json', async(ctx, next) => {
-  ctx.body = {
-    title: 'koa2 json'
-  };
+  const user = await ctx.mongo.db('wechat').collection('user').find({ userName: 'hsuehic' }).toArray();
+  ctx.body = user;
 });
 
 module.exports = router;
