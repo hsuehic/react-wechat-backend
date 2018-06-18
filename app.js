@@ -7,7 +7,7 @@
 
 const path = require('path');
 const Koa = require('koa');
-const router = require('koa-router');
+const helmet = require('koa-helmet');
 const views = require('koa-views');
 const json = require('koa-json');
 const onerror = require('koa-onerror');
@@ -18,12 +18,26 @@ const redis = require('koa-redis');
 const koaStatic = require('koa-static');
 const websockify = require('koa-websocket');
 const mongo = require('koa-mongo');
+const jwt = require('koa-jwt');
+
+const configs = require('./configs');
+
+const errorHandle = require('./middlewares/error-handle');
 
 const redisStore = redis({});
 
 const app = websockify(new Koa());
 
 app.keys = ['keys', 'keykeys'];
+
+app.sockets = new Map();
+
+// secure headers
+app.use(helmet());
+
+// error handle
+app.use(errorHandle());
+onerror(app);
 
 // application session
 app.use(session({
@@ -38,9 +52,6 @@ app.use(mongo({
   max: 100,
   min: 1
 }));
-
-// error handler
-onerror(app);
 
 // middlewares
 app.use(bodyparser({
@@ -65,27 +76,13 @@ app.use(async(ctx, next) => {
 // feature routers
 const index = require('./routes/index');
 const users = require('./routes/users');
+const websocket = require('./routes/websocket');
+
 app.use(index.routes(), index.allowedMethods());
+
+app.use(jwt({ secret: configs.secret }).unless({ path: [/\/api\/reg/, /\/api\/login/] }));
 app.use(users.routes(), users.allowedMethods());
 
-const api = router();
-api.get('/*', async(ctx, next) => {
-  ctx.websocket.send('Hello World');
-  ctx.websocket.on('message', message => {
-    console.log(message);
-    ctx.websocket.send(message);
-  });
-  ctx.websocket.on('close', () => {
-    console.log('closed');
-  });
-  await next;
-});
-
-app.ws.use(api.routes()).use(api.allowedMethods());
-
-// error-handling
-app.on('error', (err, ctx) => {
-  console.error('server error', err, ctx);
-});
+app.ws.use(websocket.routes()).use(websocket.allowedMethods());
 
 module.exports = app;
