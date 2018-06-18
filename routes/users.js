@@ -1,13 +1,32 @@
 const router = require('koa-router')();
 
-router.prefix('/users');
+const configs = require('../configs');
 
-router.get('/', (ctx, next) => {
-  ctx.body = 'this is a users response!';
+router.prefix('/api');
+
+router.all('/login', (ctx, next) => {
+  ctx.body = {
+    code: 0,
+    message: 'success',
+    data: {
+      token: ''
+    }
+  }
 });
 
-router.get('/bar', (ctx, next) => {
-  ctx.body = 'this is a users/bar response';
+router.all('/reg', (ctx, next) => {
+  ctx.body = {
+    code: 0,
+    message: 'success'
+  };
+});
+
+router.all('/info', (ctx, next) => {
+  ctx.body = {
+    code: 0,
+    message: '',
+    data: ctx.state.user || {}
+  }
 });
 
 module.exports = router;
