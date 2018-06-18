@@ -1,13 +1,14 @@
 db.getCollection('user').update(
     // query 
     {
-        "userName" : "hsuehic"
+        "phone" : "18958067917"
     },
     
     // update 
-    {   
+    {
         $set: {
-            "nick": "少伯"
+            "region": "+86",
+            "email": "hsuehic@163.com"
         }
     },
     
