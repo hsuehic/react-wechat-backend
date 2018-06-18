@@ -7,14 +7,15 @@
 
 const crypto = require('crypto');
 
-const md5 = crypto.createHash('md5');
-
 /**
  * 使用md5方法加密码
  * @param {string} input 需要加密的字符串
  * @return {string} 加密码生成的字符串
  */
-const encryptUsingMd5 = input => md5.update(input).digest('hex');
+const encryptUsingMd5 = input => {
+  const md5 = crypto.createHash('md5');
+  return md5.update(input).digest('hex');
+};
 
 module.exports = {
   encryptUsingMd5
