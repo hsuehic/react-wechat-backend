@@ -1,5 +1,6 @@
 const router = require('koa-router')();
 const jwt = require('jsonwebtoken');
+const pinyin = require('pinyin');
 const crypto = require('../utils/crypto');
 const configs = require('../configs');
 
@@ -7,6 +8,7 @@ const { encryptUsingMd5 } = crypto;
 
 router.prefix('/api');
 
+// 用户登录
 router.all('/login', async(ctx, next) => {
   const collection = ctx.mongo.db('wechat').collection('user');
   const { phone, password } = ctx.request.body;
@@ -36,19 +38,51 @@ router.all('/login', async(ctx, next) => {
   }
 });
 
-router.all('/reg', (ctx, next) => {
-  ctx.body = {
-    code: 0,
-    message: 'success'
-  };
+// 用户注册
+router.all('/reg', async(ctx, next) => {
+  const { nick, thumb, userName, password, region, email, phone } = ctx.request.body;
+  let message;
+  if (!nick) {
+    message = '请填写昵称';
+  } else if (!userName) {
+    message = '请输入用户名';
+  } else if (!password) {
+    message = '请输入密码';
+  } else if (!email) {
+    message = '请输入Email';
+  } else if (!phone) {
+    message = '请输入手机号码';
+  }
+  if (message) {
+    ctx.body = {
+      code: 100003,
+      message
+    };
+  } else {
+    const group = pinyin(nick, { style: pinyin.STYLE_FIRST_LETTER })[0][0].toUpperCase();
+
+    const user = { nick, thumb, userName, password: encryptUsingMd5(password), region, email, phone, group };
+    const collection = ctx.mongo.db('wechat').collection('user');
+    const result = await collection.insert(user);
+    if (result.insertedCount > 0) {
+      ctx.body = {
+        code: 0,
+        message: ''
+      };
+    } else {
+      ctx.body = {
+        code: 100004,
+        message: '手机号已注册'
+      };
+    }
+  }
+  next();
 });
 
-router.all('/info', (ctx, next) => {
-  ctx.body = {
-    code: 0,
-    message: '',
-    data: ctx.state.user || {}
-  };
+/**
+ * 获取用户信息
+ */
+router.all('/info', async(ctx, next) => {
 });
 
 module.exports = router;
