@@ -5,9 +5,9 @@
  * @Date   : 2018-6-18 13:47:09
  */
 
- export default () => {
-  retur (ctx, next) => {
-    return next().catch(err) => {
+ module.exports = () => {
+  return (ctx, next) => {
+    return next().catch(err => {
       if (err.status === 401) {
         ctx.status = 401;
         ctx.body = {
@@ -16,6 +16,6 @@
       } else {
         throw err;
       }
-    }
+    });
   };
-}
+};
