@@ -75,13 +75,13 @@ app.use(async(ctx, next) => {
 
 // feature routers
 const index = require('./routes/index');
-const users = require('./routes/users');
+const user = require('./routes/user');
 const websocket = require('./routes/websocket');
 
 app.use(index.routes(), index.allowedMethods());
 
 app.use(jwt({ secret: configs.secret }).unless({ path: [/\/api\/reg/, /\/api\/login/] }));
-app.use(users.routes(), users.allowedMethods());
+app.use(user.routes(), user.allowedMethods());
 
 app.ws.use(websocket.routes()).use(websocket.allowedMethods());
 

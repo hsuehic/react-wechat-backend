@@ -9,10 +9,14 @@
 const router = require('koa-router');
 
 const websocket = router();
+const sockets = new Map();
 
 websocket.get('/*', async(ctx, next) => {
-  app.sockets.add(ctx.websocket);
-  ctx.websocket.send('Hello World');
+  sockets.add(ctx.websocket);
+  ctx.websocket.send(JSON.stringify({
+    type: 'init',
+    data: {}
+  }));
   ctx.websocket.on('message', message => {
     const msg = JSON.parse(message);
     switch (msg.type) {
@@ -24,14 +28,14 @@ websocket.get('/*', async(ctx, next) => {
     }
   });
   ctx.websocket.on('close', () => {
-    app.sockets.delete(ctx.websocket);
+    sockets.delete(ctx.websocket);
     console.log('closed');
   });
   await next;
 });
 
 const sendCandidate = (socket, message) => {
-  app.sockets.forEach(s => {
+  sockets.forEach(s => {
     if (s !== socket) {
       socket.send(message);
     }

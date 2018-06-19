@@ -6,5 +6,6 @@
  */
 
 module.exports = {
-  secret: 'richard'
+  secret: 'richard',
+  db: 'wechat'
 };

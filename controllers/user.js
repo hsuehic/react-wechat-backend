@@ -1,4 +1,10 @@
-const router = require('koa-router')();
+/**
+ * @File   : user.js
+ * @Author : Richard (xiaowei.hsueh@gmail.com)
+ * @Link   : http://www.gistop.com/
+ * @Date   : 2018-6-18 15:29:20
+ */
+
 const jwt = require('jsonwebtoken');
 const pinyin = require('pinyin');
 const crypto = require('../utils/crypto');
@@ -6,41 +12,7 @@ const configs = require('../configs');
 
 const { encryptUsingMd5 } = crypto;
 
-router.prefix('/api');
-
-// 用户登录
-router.all('/login', async(ctx, next) => {
-  const collection = ctx.mongo.db('wechat').collection('user');
-  const { phone, password } = ctx.request.body;
-  const user = await collection.findOne({ phone });
-  if (!user) {
-    ctx.body = {
-      code: 100001,
-      message: '手机号没有注册'
-    };
-  } else if (user.password != encryptUsingMd5(password)) {
-    ctx.body = {
-      code: 100002,
-      message: '密码错误'
-    };
-  } else {
-    const userToken = { phone };
-    const { secret } = configs;
-    const token = jwt.sign(userToken, secret, {expiresIn: '1h'});
-
-    ctx.body = {
-      code: 0,
-      message: 'success',
-      data: {
-        token
-      }
-    };
-  }
-  next();
-});
-
-// 用户注册
-router.all('/reg', async(ctx, next) => {
+const register = async(ctx, next) => {
   const { nick, thumb, userName, password, region, email, phone } = ctx.request.body;
   let message;
   if (!nick) {
@@ -78,12 +50,39 @@ router.all('/reg', async(ctx, next) => {
     }
   }
   next();
-});
+};
 
-/**
- * 获取用户信息
- */
-router.all('/info', async(ctx, next) => {
+const login = async(ctx, next) => {
+  const collection = ctx.mongo.db('wechat').collection('user');
+  const { phone, password } = ctx.request.body;
+  const user = await collection.findOne({ phone });
+  if (!user) {
+    ctx.body = {
+      code: 100001,
+      message: '手机号没有注册'
+    };
+  } else if (user.password != encryptUsingMd5(password)) {
+    ctx.body = {
+      code: 100002,
+      message: '密码错误'
+    };
+  } else {
+    const userToken = { phone };
+    const { secret } = configs;
+    const token = jwt.sign(userToken, secret, {expiresIn: '1h'});
+
+    ctx.body = {
+      code: 0,
+      message: 'success',
+      data: {
+        token
+      }
+    };
+  }
+  next();
+};
+
+const info = async(ctx, next) => {
   const { user } = ctx.state;
   const { phone } = user;
   const userInfo = await ctx.mongo.db('wechat').collection('user').findOne({ phone });
@@ -91,6 +90,10 @@ router.all('/info', async(ctx, next) => {
   delete res.password;
   ctx.body = userInfo;
   next();
-});
+};
 
-module.exports = router;
+module.exports = {
+  register,
+  login,
+  info
+};
