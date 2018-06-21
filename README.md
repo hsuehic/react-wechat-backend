@@ -7,6 +7,8 @@
 * 应用地址： [http://wechat.gismall.com/](http://wechat.gismall.com/)<br />
   扫一扫 <br />
   ![](./res/wechat.png)
+* 大致效果，后面完整实现了再贴一个demo
+  ![](./res/wechat.gif)
 * 前端仓库地址： [https://github.com/hsuehic/react-wechat](https://github.com/hsuehic/react-wechat)
 * 后台他库地址： [https://github.com/hsuehic/react-wechat-backend](https://github.com/hsuehic/react-wechat-backend)
 
