@@ -79,10 +79,11 @@ const user = require('./routes/user');
 const websocket = require('./routes/websocket');
 
 app.use(index.routes(), index.allowedMethods());
-
+// json web tocken
 app.use(jwt({ secret: configs.secret }).unless({ path: [/\/api\/reg/, /\/api\/login/] }));
+// api
 app.use(user.routes(), user.allowedMethods());
-
+// websocket
 app.ws.use(websocket.routes()).use(websocket.allowedMethods());
 
 module.exports = app;
