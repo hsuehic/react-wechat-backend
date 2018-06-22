@@ -85,7 +85,11 @@ const login = async(ctx, next) => {
 const info = async(ctx, next) => {
   const { user } = ctx.state;
   const { phone } = user;
-  const userInfo = await ctx.mongo.db('wechat').collection('user').findOne({ phone });
+  const userInfo = await ctx.mongo.db('wechat').collection('user').findOne({ phone }, {
+    projection: {
+      password: 0
+    }
+  });
   const res = { ...userInfo };
   delete res.password;
   ctx.body = userInfo;

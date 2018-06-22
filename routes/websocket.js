@@ -23,17 +23,17 @@ websocket.get('/*', async(ctx, next) => {
     }));
     ctx.websocket.on('message', message => {
       const msg = JSON.parse(message);
-      switch (msg.type) {
+      const { type } = msg;
+      switch (type) {
         case 'candidate':
-          sendCandidate(ctx.websocket, message);
+          sendCandidate(msg);
           break;
         default:
           break;
       }
     });
     ctx.websocket.on('close', () => {
-      sockets.delete(ctx.websocket);
-      console.log('closed');
+      sockets.delete(phone);
     });
   } else {
     // 未登录的情况直接关闭socket链接
@@ -42,12 +42,20 @@ websocket.get('/*', async(ctx, next) => {
   await next();
 });
 
-const sendCandidate = (socket, message) => {
-  sockets.forEach(s => {
-    if (s !== socket) {
-      socket.send(message);
-    }
-  });
+/**
+ * 发送视频请求
+ * @param { object } user 发送的用户
+ * @param {object} msg 请求信息
+ */
+const sendCandidate = (user, msg) => {
+  const { phone, candidate } = msg;
+  const targetSocket = sockets.get(phone);
+  if (targetSocket) {
+    targetSocket.send(JSON.stringify({
+      user,
+      candidate
+    }));
+  }
 };
 
 module.exports = websocket;
