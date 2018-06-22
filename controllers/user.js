@@ -71,10 +71,13 @@ const login = async(ctx, next) => {
     const { secret } = configs;
     const token = jwt.sign(userToken, secret, {expiresIn: '1h'});
 
+    let info = { ...user };
+    delete info.password;
     ctx.body = {
       code: 0,
       message: 'success',
       data: {
+        info,
         token
       }
     };
