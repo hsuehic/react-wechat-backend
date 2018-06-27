@@ -1,5 +1,5 @@
 /**
- * @description 联系人操作对象模型
+ * 联系人操作对象模型
  * @File   : contact.js
  * @Author : Richard (xiaowei.hsueh@gmail.com)
  * @Link   : http://www.gistop.com/
