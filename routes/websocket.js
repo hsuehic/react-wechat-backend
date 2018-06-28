@@ -7,6 +7,7 @@
  */
 
 const router = require('koa-router');
+const UserModel = require('../models/user');
 
 const websocket = router();
 const sockets = new Map();
@@ -17,10 +18,7 @@ websocket.get('/*', async(ctx, next) => {
   if (user) {
     const { phone } = user;
     sockets.add(phone, ctx.websocket);
-    ctx.websocket.send(JSON.stringify({
-      type: 'init',
-      data: {}
-    }));
+    await sendInitialData(ctx);
     ctx.websocket.on('message', message => {
       const msg = JSON.parse(message);
       const { type } = msg;
@@ -56,6 +54,28 @@ const sendCandidate = (user, msg) => {
       candidate
     }));
   }
+};
+
+/**
+ * 发送初始化数据
+ * @param {Application} ctx 上下文对象
+ */
+const sendInitialData = async ctx => {
+  const userModel = new UserModel(ctx);
+  const messages = await userModel.getMessageList();
+  ctx.websocket.send(JSON.stringify({
+    type: 'wechat/save',
+    payload: {
+      messages
+    }
+  }));
+  const contacts = await userModel.getContactList();
+  ctx.websocket.send(JSON.stringify({
+    type: 'wechat/contacts',
+    payload: {
+      contacts
+    }
+  }));
 };
 
 module.exports = websocket;

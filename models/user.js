@@ -31,12 +31,30 @@ class UserModel extends BaseModel {
    * 获取联系人列表
    */
   async getContactList() {
-    const { contactService } = this;
+    const { userService } = this;
     const { phone } = this.user;
     const query = {
-      ower: phone
+      phone
     };
-    const result = await contactService.find(query);
+    const options = {
+      projection: {
+        contact: 1
+      }
+    };
+    const contactPhones = await userService.findOne(query, options);
+    const q = {
+      phone: {
+        $in: contactPhones
+      }
+    };
+    const opts = {
+      projection: {
+        nick: 1,
+        phone: 1,
+        thumb: 1
+      }
+    };
+    const result = await userService.find(q, opts);
     return result.toArray();
   }
 
@@ -49,7 +67,10 @@ class UserModel extends BaseModel {
     const query = {
       to: phone
     };
-    const result = await messageService.find(query);
+    const options = {
+
+    };
+    const result = await messageService.find(query, options);
     return result.toArray();
   }
 }
