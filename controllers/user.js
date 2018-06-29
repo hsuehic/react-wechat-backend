@@ -69,7 +69,7 @@ const login = async(ctx, next) => {
   } else {
     const userToken = { phone };
     const { secret } = configs;
-    const token = jwt.sign(userToken, secret, {expiresIn: '1h'});
+    const token = jwt.sign(userToken, secret, {expiresIn: '24h'});
 
     let info = { ...user };
     delete info.password;
@@ -88,14 +88,18 @@ const login = async(ctx, next) => {
 const info = async(ctx, next) => {
   const { user } = ctx.state;
   const { phone } = user;
-  const userInfo = await ctx.mongo.db('wechat').collection('user').findOne({ phone }, {
+  const info = await ctx.mongo.db('wechat').collection('user').findOne({ phone }, {
     projection: {
-      password: 0
+      'password': 0
     }
   });
-  const res = { ...userInfo };
-  delete res.password;
-  ctx.body = userInfo;
+  ctx.body = {
+    code: 0,
+    message: 'success',
+    data: {
+      info
+    }
+  };
   next();
 };
 

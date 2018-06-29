@@ -80,7 +80,7 @@ const websocket = require('./routes/websocket');
 
 app.use(index.routes(), index.allowedMethods());
 // json web tocken
-app.use(jwt({ secret: configs.secret }).unless({ path: [/\/api\/reg/, /\/api\/login/] }));
+app.use(jwt({ secret: configs.secret, cookie: 'jwt' }).unless({ path: [/\/api\/reg/, /\/api\/login/] }));
 // api
 app.use(user.routes(), user.allowedMethods());
 // websocket

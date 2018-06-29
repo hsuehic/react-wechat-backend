@@ -13,7 +13,7 @@ const MessageModel = require('../models/message');
 const websocket = router();
 const sockets = new Map();
 
-websocket.get('/*', async(ctx, next) => {
+websocket.get('/wechat/:token', async(ctx, next) => {
   const { user } = ctx.state;
   // 已经登录通过难
   if (user) {
