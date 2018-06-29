@@ -8,6 +8,7 @@
 
 const router = require('koa-router');
 const UserModel = require('../models/user');
+const MessageModel = require('../models/message');
 
 const websocket = router();
 const sockets = new Map();
@@ -24,7 +25,10 @@ websocket.get('/*', async(ctx, next) => {
       const { type } = msg;
       switch (type) {
         case 'candidate':
-          sendCandidate(msg);
+          sendCandidate(ctx, user, msg);
+          break;
+        case 'message':
+          sendMessage(ctx, user, msg);
           break;
         default:
           break;
@@ -42,17 +46,51 @@ websocket.get('/*', async(ctx, next) => {
 
 /**
  * 发送视频请求
- * @param { object } user 发送的用户
+ * @param {object} ctx 请求上下文
+ * @param {object} user 发送的用户
  * @param {object} msg 请求信息
  */
-const sendCandidate = (user, msg) => {
-  const { phone, candidate } = msg;
+const sendCandidate = (ctx, user, msg) => {
+  const { payload } = msg;
+  const { phone, candidate } = payload;
   const targetSocket = sockets.get(phone);
   if (targetSocket) {
     targetSocket.send(JSON.stringify({
       user,
       candidate
     }));
+  } else {
+    // 保存离线消息
+    saveOfflineMessage(ctx, user, {
+      type: 'message',
+      payload: {
+        phone: phone,
+        message: 'video-chat-request'
+      }
+    });
+  }
+};
+
+/**
+ * 消息处理
+ * @param {object} ctx, 请求上下文
+ * @param {object} user 发送的用户
+ * @param {string} msg 消息内容
+ */
+const sendMessage = (ctx, user, msg) => {
+  const { payload } = msg;
+  const { phone, message } = payload;
+  const targetSocket = sockets.get(phone);
+  if (targetSocket) {
+    targetSocket.send({
+      type: 'message',
+      payload: {
+        user,
+        message
+      }
+    });
+  } else { // 保存离线消息
+    saveOfflineMessage(ctx, user, msg);
   }
 };
 
@@ -76,6 +114,30 @@ const sendInitialData = async ctx => {
       contacts
     }
   }));
+};
+
+const saveOfflineMessage = async(ctx, user, msg) => {
+  const now = new Date();
+  const { payload } = msg;
+  const { phone, message } = payload;
+  const messageModel = new MessageModel(ctx);
+  const selector = {
+    to: phone
+  };
+  const document = {
+    $set: {
+      date: now,
+      message
+    },
+    $inc: {
+      count: 1
+    }
+  };
+  const options = {
+    insert: true,
+    multi: false
+  };
+  messageModel.update(selector, document, options);
 };
 
 module.exports = websocket;

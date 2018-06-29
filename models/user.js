@@ -10,6 +10,7 @@ const BaseModel = require('./base');
 const UserService = require('../services/user');
 const ContactService = require('../services/contact');
 const MessageService = require('../services/message');
+const ConversationService = require('../services/conversation');
 
 /**
  * 用户模型
@@ -25,6 +26,7 @@ class UserModel extends BaseModel {
     this.userService = new UserService(db);
     this.contactService = new ContactService(db);
     this.messageService = new MessageService(db);
+    this.conversationService = new ConversationService(db);
   }
 
   /**
@@ -59,18 +61,20 @@ class UserModel extends BaseModel {
   }
 
   /**
-   * 获取消息列表
+   * 获取对话列表
    */
-  async getMessageList() {
-    const { messageService, user } = this;
+  async getConversationList() {
+    const { conversationService, user } = this;
     const { phone } = user;
     const query = {
       to: phone
     };
     const options = {
-
+      sort: {
+        date: 1
+      }
     };
-    const result = await messageService.find(query, options);
+    const result = await conversationService.find(query, options);
     return result.toArray();
   }
 }

@@ -36,7 +36,7 @@ const register = async(ctx, next) => {
 
     const user = { nick, thumb, userName, password: encryptUsingMd5(password), region, email, phone, group };
     const collection = ctx.mongo.db('wechat').collection('user');
-    const result = await collection.insert(user);
+    const result = await collection.insertOne(user);
     if (result.insertedCount > 0) {
       ctx.body = {
         code: 0,

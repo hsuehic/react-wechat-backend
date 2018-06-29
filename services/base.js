@@ -34,12 +34,23 @@ class BaseService {
   }
 
   /**
-   * 查询，并返回第一个符合的对象
+   * 查询，并更新
    * @param {object} query 查询对象
    * @param {object} opts 设置
    */
   async findOne(query, opts) {
     const result = await this.collection.findOne(query, opts);
+    return result;
+  }
+
+  /**
+   * 查询，并返回第一个符合的对象
+   * @param {object} filter 查询对象
+   * @param {object} update 更新操作
+   * @param {object} opts 设置
+   */
+  async findOneAndUpdate(filter, update, opts) {
+    const result = await this.collection.findOneAndUpdate(filter, update, opts);
     return result;
   }
 
@@ -64,22 +75,34 @@ class BaseService {
   }
 
   /**
-   * 更新
-   * @param {object} selector 查询对象
+   * 更新文档
+   * @param {object} filter 查询对象
    * @param {object} document 更新文档
    * @param {object} opts 设置
    */
-  async update(selector, document, opts) {
-    const result = await this.collection.update(selector, document, opts);
+  async updateMany(filter, document, opts) {
+    const result = await this.collection.updateMany(filter, document, opts);
     return result;
   }
 
   /**
    * 新增加文档
-   * @param {object} doc 要新增加的文档
+   * @param {Array} docs 要新增加的文档
+   * @param {object} opts 选项
    */
-  async insert(doc) {
-    const result = await this.collection.insert(doc);
+  async insertMany(docs, opts) {
+    const result = await this.collection.insert(docs, opts);
+    return result;
+  }
+
+  /**
+   * 更新一个文档
+   * @param {object} filter 查询对象
+   * @param {object} document 更新文档
+   * @param {object} opts 设置
+   */
+  async updateOne(filter, document, opts) {
+    const result = await this.collection.update(filter, document, opts);
     return result;
   }
 }
