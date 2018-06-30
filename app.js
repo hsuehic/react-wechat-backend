@@ -17,12 +17,12 @@ const session = require('koa-generic-session');
 const redis = require('koa-redis');
 const koaStatic = require('koa-static');
 const websockify = require('koa-websocket');
-const mongo = require('koa-mongo');
 const jwt = require('koa-jwt');
 
-const configs = require('./configs');
-
+const mongo = require('./middlewares/koa-mongo');
 const errorHandle = require('./middlewares/error-handle');
+
+const configs = require('./configs');
 
 const redisStore = redis({});
 

@@ -90,7 +90,8 @@ const info = async(ctx, next) => {
   const { phone } = user;
   const info = await ctx.mongo.db('wechat').collection('user').findOne({ phone }, {
     projection: {
-      'password': 0
+      password: 0,
+      contacts: 0
     }
   });
   ctx.body = {
