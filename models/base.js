@@ -6,10 +6,14 @@
  * @Date   : 2018-6-20 15:55:31
  */
 
+const configs = require('../configs');
+
 class BaseModel {
-  constructor(ctx) {
+  constructor(ctx, user) {
     this.context = ctx;
-    this.user = ctx.state.user;
+    this.user = user || ctx.state.user;
+    const { mongo } = ctx;
+    this.db = mongo.db(configs.db);
   }
 }
 

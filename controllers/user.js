@@ -10,6 +10,7 @@ const pinyin = require('pinyin');
 const crypto = require('../utils/crypto');
 const configs = require('../configs');
 
+const { db: dbName } = configs;
 const { encryptUsingMd5 } = crypto;
 
 const register = async(ctx, next) => {
@@ -35,7 +36,7 @@ const register = async(ctx, next) => {
     const group = pinyin(nick, { style: pinyin.STYLE_FIRST_LETTER })[0][0].toUpperCase();
 
     const user = { nick, thumb, userName, password: encryptUsingMd5(password), region, email, phone, group };
-    const collection = ctx.mongo.db('wechat').collection('user');
+    const collection = ctx.mongo.db(dbName).collection('user');
     const result = await collection.insertOne(user);
     if (result.insertedCount > 0) {
       ctx.body = {
@@ -67,7 +68,8 @@ const login = async(ctx, next) => {
       message: '密码错误'
     };
   } else {
-    const userToken = { phone };
+    const { nick } = user;
+    const userToken = { phone, nick };
     const { secret } = configs;
     const token = jwt.sign(userToken, secret, {expiresIn: '24h'});
 

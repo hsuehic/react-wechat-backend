@@ -47,7 +47,7 @@ function mongo(options) {
         debug('Acquire one connection (min: %s, max: %s, poolSize: %s)', options.min, options.max, mongoPool.size);
         return next();
       })
-      .then(async () => {
+      .then(async() => {
         await release(ctx.mongo);
       })
       .catch(async error => {

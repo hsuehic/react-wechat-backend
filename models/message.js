@@ -12,8 +12,7 @@ const MessageService = require('../services/message');
 class MessageModel extends BaseModel {
   constructor(ctx) {
     super(ctx);
-    const {db} = ctx.mongo;
-    this.messageService = new MessageService(db);
+    this.messageService = new MessageService(this.db);
   }
 
   /**

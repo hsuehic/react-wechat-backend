@@ -12,7 +12,7 @@ const RoomService = require('../services/room');
 class RoomModel extends BaseModel {
   constructor(ctx) {
     super(ctx);
-    this.roomService = new RoomService(ctx.mongo.db);
+    this.roomService = new RoomService(this.db);
   }
 }
 

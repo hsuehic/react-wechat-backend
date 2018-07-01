@@ -5,15 +5,13 @@
  * @Link   : http://www.gistop.com/
  * @Date   : 2018-6-20 17:38:31
  */
-
 const BaseModel = require('./base');
 const ContactService = require('../services/contact');
 
 class ContactModel extends BaseModel {
   constructor(ctx) {
     super(ctx);
-    const {db} = ctx.mongo;
-    this.contactService = new ContactService(db);
+    this.contactService = new ContactService(this.db);
   }
 
   /**

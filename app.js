@@ -11,22 +11,22 @@ const helmet = require('koa-helmet');
 const views = require('koa-views');
 const json = require('koa-json');
 const onerror = require('koa-onerror');
-const bodyparser = require('koa-bodyparser');
+const bodyparser = require('koa-body');
 const logger = require('koa-logger');
 const session = require('koa-generic-session');
 const redis = require('koa-redis');
 const koaStatic = require('koa-static');
-const websockify = require('koa-websocket');
 const jwt = require('koa-jwt');
 
 const mongo = require('./middlewares/koa-mongo');
+const websockify = require('./middlewares/koa-websocket');
 const errorHandle = require('./middlewares/error-handle');
 
 const configs = require('./configs');
 
 const redisStore = redis({});
 
-const app = websockify(new Koa());
+const app = new Koa();
 
 app.keys = ['keys', 'keykeys'];
 
@@ -45,17 +45,12 @@ app.use(session({
 }));
 
 // mongodb context
-app.use(mongo({
-  host: '127.0.0.1',
-  port: 27017,
-  db: 'wechat',
-  max: 100,
-  min: 1
-}));
+app.use(mongo(configs.mongodb));
 
 // middlewares
 app.use(bodyparser({
-  enableTypes: ['json', 'form', 'text']
+  multipart: true,
+  urlencoded: true
 }));
 app.use(json());
 app.use(logger());
@@ -84,6 +79,7 @@ app.use(jwt({ secret: configs.secret, cookie: 'jwt' }).unless({ path: [/\/api\/r
 // api
 app.use(user.routes(), user.allowedMethods());
 // websocket
+websockify(app);
 app.ws.use(websocket.routes()).use(websocket.allowedMethods());
 
 module.exports = app;

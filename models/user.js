@@ -20,9 +20,9 @@ class UserModel extends BaseModel {
    * 构造函数
    * @param {Koa.Application} ctx 上下文对象
    */
-  constructor(ctx) {
-    super(ctx);
-    const { db } = ctx.mongo;
+  constructor(ctx, user) {
+    super(ctx, user);
+    const { db } = this;
     this.userService = new UserService(db);
     this.contactService = new ContactService(db);
     this.messageService = new MessageService(db);
@@ -40,20 +40,25 @@ class UserModel extends BaseModel {
     };
     const options = {
       projection: {
-        contact: 1
+        contacts: 1
       }
     };
-    const contactPhones = await userService.findOne(query, options);
+    const { contacts } = await userService.findOne(query, options);
     const q = {
       phone: {
-        $in: contactPhones
+        $in: contacts
       }
     };
     const opts = {
       projection: {
         nick: 1,
         phone: 1,
-        thumb: 1
+        thumb: 1,
+        group: 1,
+        userName: 1
+      },
+      sort: {
+        group: 1
       }
     };
     const result = await userService.find(q, opts);
