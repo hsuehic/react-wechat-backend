@@ -33,7 +33,7 @@ const register = async(ctx, next) => {
       message
     };
   } else {
-    const group = pinyin(nick, { style: pinyin.STYLE_FIRST_LETTER })[0][0].toUpperCase();
+    const group = pinyin(nick, { style: pinyin.STYLE_FIRST_LETTER })[0][0].toUpperCase().substr(0, 1);
 
     const user = { nick, thumb, userName, password: encryptUsingMd5(password), region, email, phone, group };
     const collection = ctx.mongo.db(dbName).collection('user');
