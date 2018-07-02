@@ -55,7 +55,8 @@ class UserModel extends BaseModel {
         phone: 1,
         thumb: 1,
         group: 1,
-        userName: 1
+        userName: 1,
+        region: 1
       },
       sort: {
         group: 1
