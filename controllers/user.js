@@ -71,7 +71,7 @@ const login = async(ctx, next) => {
     const { nick } = user;
     const userToken = { phone, nick };
     const { secret } = configs;
-    const token = jwt.sign(userToken, secret, {expiresIn: '24h'});
+    const token = jwt.sign(userToken, secret);
 
     let info = { ...user };
     delete info.password;
