@@ -59,17 +59,21 @@ websocket.get('/wechat/:token', async(ctx, next) => {
     sockets.set(phone, ctx.websocket);
     await sendInitialData(ctx, user);
     ctx.websocket.on('message', message => {
-      const msg = JSON.parse(message);
-      const { type } = msg;
-      switch (type) {
-        case 'candidate':
-          sendCandidate(ctx, user, msg);
-          break;
-        case 'message':
-          sendMessage(ctx, user, msg);
-          break;
-        default:
-          break;
+      try {
+        const msg = JSON.parse(message);
+        const { type } = msg;
+        switch (type) {
+          case 'candidate':
+            sendCandidate(ctx, user, msg);
+            break;
+          case 'wechat/saveMessage':
+            sendMessage(ctx, user, msg);
+            break;
+          default:
+            break;
+        }
+      } catch (e) {
+        console.error(e);
       }
     });
     ctx.websocket.on('close', () => {
@@ -117,16 +121,10 @@ const sendCandidate = (ctx, user, msg) => {
  */
 const sendMessage = (ctx, user, msg) => {
   const { payload } = msg;
-  const { phone, message } = payload;
-  const targetSocket = sockets.get(phone);
+  const { to } = payload;
+  const targetSocket = sockets.get(to);
   if (targetSocket) {
-    targetSocket.send({
-      type: 'message',
-      payload: {
-        user,
-        message
-      }
-    });
+    targetSocket.send(JSON.stringify(msg));
   } else { // 保存离线消息
     saveOfflineMessage(ctx, user, msg);
   }
@@ -163,15 +161,15 @@ const sendInitialData = async(ctx, user) => {
 const saveOfflineMessage = async(ctx, user, msg) => {
   const now = new Date();
   const { payload } = msg;
-  const { phone, message } = payload;
+  const { to, content } = payload;
   const messageModel = new MessageModel(ctx);
   const selector = {
-    to: phone
+    to
   };
   const document = {
     $set: {
       date: now,
-      message
+      content
     },
     $inc: {
       count: 1
