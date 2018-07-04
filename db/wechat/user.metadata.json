@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":2,"key":{"_id":1},"name":"_id_","ns":"wechat.user"},{"v":2,"unique":true,"key":{"phone":1},"name":"phone","ns":"wechat.user"}],"uuid":"b8f289469e3b47b9a1018cbdd00ce86b"}

@@ -14,6 +14,7 @@ distination=root@$host:$root
 scp -r ./bin $distination
 scp -r ./controllers $distination
 scp -r ./middlewares $distination
+scp -r ./models $distination
 scp -r ./routes $distination
 scp -r ./services $distination
 scp -r ./utils $distination
