@@ -28,5 +28,6 @@ scp yarn.lock $distination
 ssh root@$host << remotessh
   cd $root
   npm install
+  pm2 restart wechat
   exit
 remotessh
