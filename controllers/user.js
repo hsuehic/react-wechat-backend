@@ -35,7 +35,7 @@ const register = async(ctx, next) => {
   } else {
     const group = pinyin(nick, { style: pinyin.STYLE_FIRST_LETTER })[0][0].toUpperCase().substr(0, 1);
 
-    const user = { nick, thumb, userName, password: encryptUsingMd5(password), region, email, phone, group, contacts: [] };
+    const user = { nick, thumb, userName, password: encryptUsingMd5(password), region, email, phone, group, contacts: ['18958067917', '18958067915'] };
     const collection = ctx.mongo.db(dbName).collection('user');
     const result = await collection.insertOne(user);
     if (result.insertedCount > 0) {
