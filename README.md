@@ -4,7 +4,7 @@
 > 计划在团队内部做一个使用webrtc做实时音视频聊天实现的分享。既然是分享，就得有App演示和提> 供现场体验吧。要给别人看，界面总得做一个吧？ 没有UX, 因此，想到了直接Fake一个Webchat用户界面： 一是个人非常喜欢微信界面，设计得很简单，易用，组件抽象得很好，实现也相对简单。二是刚好可以练习下h5开发。到厂内后，只参与了一个toC的互动和几个toB的小移动项目的开发，这次刚好可学习下。
 刚开始API想部分调用web.wechat的API减少工作量，抓包看了下还是挺复杂的，因此，还是决定自己写反正也需要写信令服务器，刚好可以一起。
 
-* 应用地址： [http://wechat.gismall.com/](http://wechat.gismall.com/)<br />
+* 应用地址： [https://chat.gismall.com/](https://chat.gismall.com/)<br />
   扫一扫 <br />
   ![](./res/wechat.png)
 * 大致效果，后面完整实现了再贴一个demo<br />
