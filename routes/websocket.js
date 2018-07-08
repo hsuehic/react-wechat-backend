@@ -62,12 +62,20 @@ websocket.get('/wechat/:token', async(ctx, next) => {
       try {
         const msg = JSON.parse(message);
         const { type } = msg;
+        const { payload } = msg;
+        const { to } = payload;
         switch (type) {
           case 'candidate':
             sendCandidate(ctx, user, msg);
             break;
           case 'wechat/saveMessage':
             sendMessage(ctx, user, msg);
+            break;
+          case 'new-ice-candidate':
+          case 'hang-up':
+          case 'video-offer':
+          case 'video-answer':
+            sendMessageToClient(to, message);
             break;
           default:
             break;
@@ -117,7 +125,7 @@ const sendCandidate = (ctx, user, msg) => {
  * 消息处理
  * @param {object} ctx, 请求上下文
  * @param {object} user 发送的用户
- * @param {string} msg 消息内容
+ * @param {object} msg 消息对象
  */
 const sendMessage = (ctx, user, msg) => {
   const { payload } = msg;
@@ -127,6 +135,18 @@ const sendMessage = (ctx, user, msg) => {
     targetSocket.send(JSON.stringify(msg));
   } else { // 保存离线消息
     saveOfflineMessage(ctx, user, msg);
+  }
+};
+
+/**
+ * 向目标客户端发消息
+ * @param {string} to 要发目标
+ * @param {string} message 消息对象
+ */
+const sendMessageToClient = (to, message) => {
+  const targetSocket = sockets.get(to);
+  if (targetSocket) {
+    targetSocket.send(JSON.stringify(message));
   }
 };
 
