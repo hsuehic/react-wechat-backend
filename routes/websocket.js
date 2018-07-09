@@ -16,6 +16,14 @@ const configs = require('../configs');
 
 const MongoClient = MongoDB.MongoClient;
 
+// 消息定义
+const RTC_MESSAGE_TYPE = {
+  CANDIDATE: 'new-ice-candidate',
+  HANG_UP: 'hang-up',
+  VIDEO_OFFER: 'video-offer',
+  VIDEO_ANSWER: 'video-answer'
+}
+
 const createMongoClient = options => {
   const defaultOptions = {
     host: 'localhost',
@@ -71,10 +79,10 @@ websocket.get('/wechat/:token', async(ctx, next) => {
           case 'wechat/saveMessage':
             sendMessage(ctx, user, msg);
             break;
-          case 'new-ice-candidate':
-          case 'hang-up':
-          case 'video-offer':
-          case 'video-answer':
+          case RTC_MESSAGE_TYPE.CANDIDATE:
+          case RTC_MESSAGE_TYPE.HANG_UP:
+          case RTC_MESSAGE_TYPE.VIDEO_OFFER:
+          case RTC_MESSAGE_TYPE.VIDEO_ANSWER:
             sendMessageToClient(to, message);
             break;
           default:
