@@ -154,7 +154,7 @@ const sendMessage = (ctx, user, msg) => {
 const sendMessageToClient = (to, message) => {
   const targetSocket = sockets.get(to);
   if (targetSocket) {
-    targetSocket.send(JSON.stringify(message));
+    targetSocket.send(message);
   }
 };
 
