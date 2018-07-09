@@ -22,7 +22,7 @@ const RTC_MESSAGE_TYPE = {
   HANG_UP: 'hang-up',
   VIDEO_OFFER: 'video-offer',
   VIDEO_ANSWER: 'video-answer'
-}
+};
 
 const createMongoClient = options => {
   const defaultOptions = {
