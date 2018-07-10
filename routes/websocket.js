@@ -21,7 +21,11 @@ const RTC_MESSAGE_TYPE = {
   CANDIDATE: 'new-ice-candidate',
   HANG_UP: 'hang-up',
   VIDEO_OFFER: 'video-offer',
-  VIDEO_ANSWER: 'video-answer'
+  VIDEO_ANSWER: 'video-answer',
+  INVITE_OFFER: 'invite-offer',
+  INVITE_ACCEPT: 'invite-accept',
+  INVITE_REFUSE: 'invite-refuse',
+  INVITE_CANCEL: 'invite-cancel'
 };
 
 const createMongoClient = options => {
@@ -83,6 +87,10 @@ websocket.get('/wechat/:token', async(ctx, next) => {
           case RTC_MESSAGE_TYPE.HANG_UP:
           case RTC_MESSAGE_TYPE.VIDEO_OFFER:
           case RTC_MESSAGE_TYPE.VIDEO_ANSWER:
+          case RTC_MESSAGE_TYPE.INVITE_ACCEPT:
+          case RTC_MESSAGE_TYPE.INVITE_CANCEL:
+          case RTC_MESSAGE_TYPE.INVITE_OFFER:
+          case RTC_MESSAGE_TYPE.INVITE_REFUSE:
             sendMessageToClient(to, message);
             break;
           default:
