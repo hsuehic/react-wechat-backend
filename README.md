@@ -1,4 +1,4 @@
-# Fack Wechat App based on Koa2, MongoDB, Redis, WebRTC，WebSocket, React, Antd Mobile, Dva
+# Fake Wechat App based on Koa2, MongoDB, Redis, WebRTC，WebSocket, React, Antd Mobile, Dva
 
 > 前言：<br />
 > 计划在团队内部做一个使用webrtc做实时音视频聊天实现的分享。既然是分享，就得有App演示和提> 供现场体验吧。要给别人看，界面总得做一个吧？ 没有UX, 因此，想到了直接Fake一个Webchat用户界面： 一是个人非常喜欢微信界面，设计得很简单，易用，组件抽象得很好，实现也相对简单。二是刚好可以练习下h5开发。到厂内后，只参与了一个toC的互动和几个toB的小移动项目的开发，这次刚好可学习下。
