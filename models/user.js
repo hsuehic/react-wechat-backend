@@ -8,7 +8,6 @@
 
 const BaseModel = require('./base');
 const UserService = require('../services/user');
-const ContactService = require('../services/contact');
 const MessageService = require('../services/message');
 const ConversationService = require('../services/conversation');
 
@@ -24,7 +23,6 @@ class UserModel extends BaseModel {
     super(ctx, user);
     const { db } = this;
     this.userService = new UserService(db);
-    this.contactService = new ContactService(db);
     this.messageService = new MessageService(db);
     this.conversationService = new ConversationService(db);
   }
@@ -73,15 +71,19 @@ class UserModel extends BaseModel {
     const { conversationService, user } = this;
     const { phone } = user;
     const query = {
-      to: phone
+      phone
     };
-    const options = {
-      sort: {
-        date: 1
+    const update = {
+      $unset: {
+        conversation: 1
       }
     };
-    const result = await conversationService.find(query, options);
-    return result.toArray();
+    const result = await conversationService.findOneAndUpdate(query, update);
+    let value = null;
+    if (result && result.value && result.value.conversation) {
+      value = result.value.conversation;
+    }
+    return value;
   }
 }
 

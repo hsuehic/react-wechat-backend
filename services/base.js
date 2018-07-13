@@ -102,7 +102,7 @@ class BaseService {
    * @param {object} opts 设置
    */
   async updateOne(filter, document, opts) {
-    const result = await this.collection.update(filter, document, opts);
+    const result = await this.collection.updateOne(filter, document, opts);
     return result;
   }
 }

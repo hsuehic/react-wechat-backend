@@ -11,7 +11,7 @@ const router = require('koa-router');
 const MongoDB = require('mongodb');
 
 const UserModel = require('../models/user');
-const MessageModel = require('../models/message');
+const ConversationModel = require('../models/conversation');
 const configs = require('../configs');
 
 const MongoClient = MongoDB.MongoClient;
@@ -173,12 +173,14 @@ const sendMessageToClient = (to, message) => {
 const sendInitialData = async(ctx, user) => {
   const userModel = new UserModel(ctx, user);
   const conversations = await userModel.getConversationList();
-  ctx.websocket.send(JSON.stringify({
-    type: 'wechat/save',
-    payload: {
-      conversations
-    }
-  }));
+  if (conversations) {
+    ctx.websocket.send(JSON.stringify({
+      type: 'wechat/saveConversation',
+      payload: {
+        conversations
+      }
+    }));
+  }
   const contacts = await userModel.getContactList();
   ctx.websocket.send(JSON.stringify({
     type: 'wechat/save',
@@ -197,25 +199,40 @@ const sendInitialData = async(ctx, user) => {
 const saveOfflineMessage = async(ctx, user, msg) => {
   const now = new Date();
   const { payload } = msg;
-  const { to, content } = payload;
-  const messageModel = new MessageModel(ctx);
+  const { to, content, from, timestamp } = payload;
+  const { phone } = user;
+  const conversationModel = new ConversationModel(ctx);
   const selector = {
-    to
+    phone: to
   };
+  const prefix = `conversation.${phone}`;
   const document = {
     $set: {
-      date: now,
-      content
+      [`${prefix}.timestamp`]: now.getTime()
     },
     $inc: {
-      count: 1
+      [`${prefix}.newCount`]: 1
+    },
+    $addToSet: {
+      [`${prefix}.items`]: {
+        content,
+        to,
+        from,
+        timestamp
+      }
     }
   };
   const options = {
     insert: true,
     multi: false
   };
-  messageModel.update(selector, document, options);
+  const p = conversationModel.update(selector, document, options);
+  p.then(() => {
+    console.log('保存离线消息成功！');
+  }).catch(error => {
+    console.log('保存离线消息失败！');
+    console.error(error);
+  });
 };
 
 module.exports = websocket;

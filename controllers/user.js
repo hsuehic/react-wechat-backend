@@ -35,7 +35,7 @@ const register = async(ctx, next) => {
   } else {
     const group = pinyin(nick, { style: pinyin.STYLE_FIRST_LETTER })[0][0].toUpperCase().substr(0, 1);
 
-    const user = { nick, thumb, userName, password: encryptUsingMd5(password), region, email, phone, group, contacts: ['18958067917', '18958067915'] };
+    const user = { nick, thumb, userName, password: encryptUsingMd5(password), region, email, phone, group, contacts: ['18958067917', '18958067916'] };
     const collection = ctx.mongo.db(dbName).collection('user');
     const result = await collection.insertOne(user);
     if (result.insertedCount > 0) {
@@ -43,6 +43,23 @@ const register = async(ctx, next) => {
         code: 0,
         message: ''
       };
+      // 添加对话记录
+      const c = ctx.mongo.db('conversation');
+      await c.insertOne({
+        phone,
+        conversation: {
+          '18958067917': {
+            timestamp: new Date().getTime(),
+            newCount: 0,
+            items: []
+          },
+          '18958067916': {
+            timestamp: new Date().getTime(),
+            newCount: 0,
+            items: []
+          }
+        }
+      });
     } else {
       ctx.body = {
         code: 100004,
