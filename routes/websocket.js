@@ -223,8 +223,7 @@ const saveOfflineMessage = async(ctx, user, msg) => {
     }
   };
   const options = {
-    insert: true,
-    multi: false
+    upsert: true
   };
   const p = conversationModel.update(selector, document, options);
   p.then(() => {
