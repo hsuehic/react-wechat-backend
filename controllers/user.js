@@ -178,7 +178,7 @@ const addContact = async(ctx, next) => {
     { updateOne: { filter: { phone: contact }, update: { $addToSet: { contacts: phone } } } }
   ];
   const collection = ctx.mongo.db('wechat').collection('user');
-  const result = collection.bulkWrite(operations);
+  const result = await collection.bulkWrite(operations);
   const { modifiedCount } = result;
   const code = modifiedCount > 0 ? 0 : 1;
   ctx.body = {
