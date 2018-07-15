@@ -12,4 +12,10 @@ router.all('/reg', userController.register);
 // 获取用户信息
 router.all('/info', userController.info);
 
+// 搜索
+router.all('/search', userController.search);
+
+// 添加到通讯录
+router.all('/contact/add', userController.addContact);
+
 module.exports = router;

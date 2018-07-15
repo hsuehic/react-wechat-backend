@@ -13,6 +13,7 @@ const configs = require('../configs');
 const { db: dbName } = configs;
 const { encryptUsingMd5 } = crypto;
 
+// 注册
 const register = async(ctx, next) => {
   const { nick, thumb, userName, password, region, email, phone } = ctx.request.body;
   let message;
@@ -82,6 +83,7 @@ const register = async(ctx, next) => {
   next();
 };
 
+// 登录， 返回token和用户信息
 const login = async(ctx, next) => {
   const collection = ctx.mongo.db('wechat').collection('user');
   const { phone, password } = ctx.request.body;
@@ -116,6 +118,7 @@ const login = async(ctx, next) => {
   next();
 };
 
+// 查询用户信息
 const info = async(ctx, next) => {
   const { user } = ctx.state;
   const { phone } = user;
@@ -135,8 +138,58 @@ const info = async(ctx, next) => {
   next();
 };
 
+// 搜索联系人
+const search = async(ctx, next) => {
+  const { user } = ctx.state;
+  const { phone } = user;
+  const { keyword } = ctx.request.body;
+  const reg = { $regex: `.*${keyword}.*`, $options: 'i', $nin: [phone] };
+  const query = { phone: reg };
+  const collection = ctx.mongo.db('wechat').collection('user');
+  const options = {
+    projection: {
+      phone: 1,
+      nick: 1,
+      thumb: 1
+    }
+  };
+  const result = collection.find(query, options);
+  const contacts = await result.toArray();
+  ctx.body = {
+    code: 0,
+    message: 'success',
+    data: {
+      searchResult: contacts
+    }
+  };
+  next();
+};
+
+// 添加到通讯录
+const addContact = async(ctx, next) => {
+  const { user } = ctx.state;
+  const { phone } = user;
+  const { phone: contact } = ctx.request.body;
+  const operations = [
+    { updateOne: { filter: { phone }, update: { $addToSet: { contacts: contact } } } },
+    { updateOne: { filter: { phone: contact }, update: { $addToSet: { contacts: phone } } } }
+  ];
+  const collection = ctx.mongo.db('wechat').collection('user');
+  const result = collection.bulkWrite(operations);
+  const { modifiedCount } = result;
+  const code = modifiedCount > 0 ? 0 : 1;
+  ctx.body = {
+    code,
+    message: 'success',
+    data: {}
+  };
+  next();
+};
+
 module.exports = {
   register,
   login,
-  info
+  info,
+  search,
+  addContact
 };
