@@ -150,7 +150,10 @@ const search = async(ctx, next) => {
     projection: {
       phone: 1,
       nick: 1,
-      thumb: 1
+      thumb: 1,
+      group: 1,
+      userName: 1,
+      region: 1
     }
   };
   const result = collection.find(query, options);
