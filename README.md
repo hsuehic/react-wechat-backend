@@ -8,7 +8,7 @@
   扫一扫 <br />
   ![](./res/wechat.png)
 * 大致效果，后面完整实现了再贴一个demo<br />
-  <img src="./res/wechat.gif" alt="" style="width:350px;" />
+  <img src="./res/wechat-2-0-30.gif" alt="" style="width:350px;" />
 * 前端仓库地址： [https://github.com/hsuehic/react-wechat](https://github.com/hsuehic/react-wechat)
 * 后台仓库地址： [https://github.com/hsuehic/react-wechat-backend](https://github.com/hsuehic/react-wechat-backend)
 
@@ -38,6 +38,30 @@
 - [ ] 通用功能
   - [ ] 传文件
   - [ ] 会话
+
+## Get Started
+
+### 1. Clonse repository
+
+```bash
+git clone git@github.com:hsuehic/react-wechat-backend.git ./react-wechat-backend
+cd ./react-wechat-backend
+```
+
+### 2. Install MongoDB & Restore the database
+* [Install MongoDB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/)
+* Restore Database
+
+```bash
+mongorestore -h 127.0.0.1 -d wechat -directoryperdb ./db
+```
+
+### 3. Install Dependencies & Start 
+
+```bash
+npm i
+npm run dev
+```
 
 ## Contribute
 欢迎一起玩耍！
