@@ -53,7 +53,7 @@ cd ./react-wechat-backend
 * Restore Database
 
 ```bash
-mongorestore -h 127.0.0.1 -d wechat -directoryperdb ./db
+mongorestore -h 127.0.0.1 -d wechat ./db
 ```
 
 ### 3. Install Dependencies & Start 
